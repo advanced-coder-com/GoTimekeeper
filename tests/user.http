@@ -1,0 +1,58 @@
+### Signup (create user)
+POST http://localhost:8080/api/user/signup
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "secret123"
+}
+
+### Signin (login user)
+POST http://localhost:8080/api/user/signin
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "secret123"
+}
+
+### Signin (wrong password)
+POST http://localhost:8080/api/user/signin
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "wrongpass"
+}
+
+### Signup with existing email
+POST http://localhost:8080/api/user/signup
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "anotherpass"
+}
+
+### Change password
+PATCH http://localhost:8080/api/user/change-password
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "old_password": "secret123",
+  "new_password": "newpassword456"
+}
+
+### Change password (bad old password)
+PATCH http://localhost:8080/api/user/change-password
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "old_password": "bad_old_pass",
+  "new_password": "newpassword456"
+}
+### Delete current user
+DELETE http://localhost:8080/api/user/delete
+Authorization: Bearer <token>
