@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/advanced-coder-com/go-timekeeper/internal/db"
-	"github.com/advanced-coder-com/go-timekeeper/internal/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -30,13 +29,12 @@ func main() {
 	}
 
 	db.Init()
-	userHandler := handler.NewUserHandler()
 
-	r := gin.Default()
-	router.SetupRoutes(r, userHandler)
+	engine := gin.Default()
+	router.SetupRoutes(engine)
 
 	log.Printf("🚀 Starting server on port %s...", port)
-	if err := r.Run(":" + port); err != nil {
+	if err := engine.Run(":" + port); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }

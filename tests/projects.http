@@ -1,0 +1,40 @@
+### Signup user
+POST http://localhost:8080/api/user/signup
+Content-Type: application/json
+
+{
+  "email": "testPojects@example.com",
+  "password": "secret123"
+}
+
+### Create project (replace <TOKEN>)
+POST http://localhost:8080/api/projects/create
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "name": "My First project"
+}
+
+### Get all projects (replace <TOKEN>)
+GET http://localhost:8080/api/projects/list
+Authorization: Bearer <TOKEN>
+
+
+### 🔍 Get project by (replace <PROJECT_ID> and <TOKEN>)
+GET http://localhost:8080/api/projects/detail/<PROJECT_ID>
+Authorization: Bearer <TOKEN>
+
+
+### ✏️ Update project name (replace <PROJECT_ID> and <TOKEN>)
+PATCH http://localhost:8080/api/projects/update/<PROJECT_ID>
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "name": "Renamed Project2"
+}
+
+### Delete project (replace <PROJECT_ID> and <TOKEN>)
+DELETE http://localhost:8080/api/projects/delete/<PROJECT_ID>
+Authorization: Bearer <TOKEN>
