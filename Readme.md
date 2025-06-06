@@ -21,7 +21,7 @@ Change `JWT_SECRET`, `DB_USER`, `DB_PASSWORD` values
 
 ### 3. Build docker with `docker compose build`
 ### 4. Run project with `docker compose up`
-
+Do not use `docker-compose` command
 ## How to debug
 
 Create Go Remote config with host `localhost` and port `2345`
