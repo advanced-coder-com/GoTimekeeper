@@ -24,10 +24,12 @@ var (
 	ErrTaskListFailed         = errors.New("failed to list task")
 	ErrTaskInvalidInput       = errors.New("invalid input")
 	ErrTaskInvalidInputStatus = errors.New("invalid input status")
+	ErrTaskHasInvalidStatus   = errors.New("task has invalid status for this action")
 )
 
 type TaskService struct {
-	repo repository.TaskRepository
+	repo              repository.TaskRepository
+	timeRecordService *TimeRecordService
 }
 
 type CreateTaskInput struct {
@@ -45,7 +47,10 @@ type UpdateTaskInput struct {
 }
 
 func NewTaskService() *TaskService {
-	return &TaskService{repo: repository.NewTaskRepository()}
+	return &TaskService{
+		repo:              repository.NewTaskRepository(),
+		timeRecordService: NewTimeRecordService(),
+	}
 }
 
 func (taskService *TaskService) Create(ctx context.Context, userID string, input CreateTaskInput) (*model.Task, error) {
@@ -152,41 +157,45 @@ func (taskService *TaskService) Update(
 	return task, err
 }
 
-func (taskService *TaskService) Delete(ctx context.Context, id int64, userID string) error {
-	task, err := taskService.GetByID(ctx, id, userID)
+func (taskService *TaskService) Delete(ctx context.Context, taskID int64, userID string) error {
+	task, err := taskService.GetByID(ctx, taskID, userID)
 	if err != nil {
 		return err
 	}
 	return taskService.repo.Delete(ctx, task)
 }
 
-func (taskService *TaskService) Start(ctx context.Context, id int64, userID string) error {
-	task, err := taskService.GetByID(ctx, id, userID)
+func (taskService *TaskService) Start(ctx context.Context, taskID int64, userID string) error {
+	task, err := taskService.GetByID(ctx, taskID, userID)
 	if err != nil {
 		return err
 	}
-	err = checkIfTaskIsNotClosed(task)
-	if err != nil {
-		return err
+	if !checkIfTaskIsNotClosed(task) || !checkIfTaskIsNotWorkingOn(task) {
+		return ErrTaskHasInvalidStatus
 	}
 	task.Status = model.StatusWorkingOn
 	task.UpdatedAt = time.Now()
-	// TODO: Create timeslot after Timeslot entity is ready
+	_, err = taskService.timeRecordService.Create(ctx, userID, taskID)
+	if err != nil {
+		return err
+	}
 	return taskService.repo.Update(ctx, task)
 }
 
-func (taskService *TaskService) Stop(ctx context.Context, id int64, userID string) error {
-	task, err := taskService.GetByID(ctx, id, userID)
+func (taskService *TaskService) Stop(ctx context.Context, taskID int64, userID string) error {
+	task, err := taskService.GetByID(ctx, taskID, userID)
 	if err != nil {
 		return err
 	}
-	err = checkIfTaskIsNotClosed(task)
-	if err != nil {
-		return err
+	if !checkIfTaskIsNotClosed(task) || !checkIfTaskIsNotOpened(task) {
+		return ErrTaskHasInvalidStatus
 	}
-	task.Status = model.StatusClosed
+	task.Status = model.StatusOpened
 	task.UpdatedAt = time.Now()
-	// TODO: Stop timeslot after Timeslot entity is ready
+	err = taskService.timeRecordService.CloseByTaskID(ctx, taskID)
+	if err != nil {
+		return err
+	}
 	return taskService.repo.Update(ctx, task)
 }
 
@@ -196,14 +205,16 @@ func (taskService *TaskService) StopAll(ctx context.Context, userID string) erro
 		return err
 	}
 	for _, task := range tasks {
-		err = checkIfTaskIsNotClosed(&task)
-		if err != nil {
-			return err
+		if !checkIfTaskIsNotClosed(&task) {
+			return ErrTaskHasInvalidStatus
 		}
 		task.Status = model.StatusOpened
 		task.UpdatedAt = time.Now()
-		// TODO: Stop timeslot after Timeslot entity is ready
-		err := taskService.repo.Update(ctx, &task)
+		err := taskService.timeRecordService.CloseByTaskID(ctx, task.ID)
+		if err != nil {
+			return err
+		}
+		err = taskService.repo.Update(ctx, &task)
 		if err != nil {
 			return err
 		}
@@ -216,13 +227,16 @@ func (taskService *TaskService) Close(ctx context.Context, id int64, userID stri
 	if err != nil {
 		return err
 	}
-	err = checkIfTaskIsNotClosed(task)
-	if err != nil {
-		return err
+	if !checkIfTaskIsNotClosed(task) || !checkIfTaskIsNotOpened(task) {
+		return ErrTaskHasInvalidStatus
 	}
 	task.Status = model.StatusClosed
 	task.UpdatedAt = time.Now()
-	// TODO: Stop timeslot after Timeslot entity is ready
+
+	err = taskService.timeRecordService.CloseByTaskID(ctx, task.ID)
+	if err != nil {
+		return err
+	}
 	return taskService.repo.Update(ctx, task)
 }
 
@@ -245,14 +259,19 @@ func (taskService *TaskService) checkExisting(
 	if err != nil {
 		return false, err
 	}
-	return len(tasks) == 0, nil
+	return len(tasks) > 0, nil
 }
 
-func checkIfTaskIsNotClosed(task *model.Task) error {
-	if task.Status == model.StatusClosed {
-		return errors.New("requested task is closed")
-	}
-	return nil
+func checkIfTaskIsNotClosed(task *model.Task) bool {
+	return task.Status != model.StatusClosed
+}
+
+func checkIfTaskIsNotWorkingOn(task *model.Task) bool {
+	return task.Status != model.StatusWorkingOn
+}
+
+func checkIfTaskIsNotOpened(task *model.Task) bool {
+	return task.Status != model.StatusOpened
 }
 
 func equalStringSlices(a, b []string) bool {

@@ -34,7 +34,6 @@ func (taskHandler *TaskHandler) Create(ctx *gin.Context) {
 	task, err := taskHandler.service.Create(ctx.Request.Context(), userID, input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrTaskCreateFailed.Error()})
-
 		return
 	}
 
