@@ -1,0 +1,104 @@
+### Signup user
+POST http://localhost:8080/api/user/signup
+Content-Type: application/json
+
+{
+  "email": "testTasks@example.com",
+  "password": "secret123"
+}
+
+### Signin user
+POST http://localhost:8080/api/user/signin
+Content-Type: application/json
+
+{
+  "email": "testTasks@example.com",
+  "password": "secret123"
+}
+
+### Create project (replace <TOKEN>)
+POST http://localhost:8080/api/projects/create
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "name": "My project 2"
+}
+
+### Create task (replace <TOKEN>, <PROJECT_ID>)
+POST http://localhost:8080/api/tasks/create
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "name": "My task 2",
+  "project_id": "<PROJECT_ID>"
+}
+
+### Get all tasks (replace <TOKEN>)
+GET http://localhost:8080/api/tasks/list-all
+Authorization: Bearer <TOKEN>
+
+### Get Active tasks (replace <TOKEN>)
+GET http://localhost:8080/api/tasks/list-active
+Authorization: Bearer <TOKEN>
+
+### Get task by ID (replace <TASK_ID> and <TOKEN>)
+GET http://localhost:8080/api/tasks/detail/<TASK_ID>
+Authorization: Bearer <TOKEN>
+
+### ✏Update task name (replace <TASK_ID> and <TOKEN>)
+PATCH http://localhost:8080/api/tasks/update/<TASK_ID>
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "name": "My task 2"
+}
+
+### ✏Update task project assign (replace <TASK_ID>, <PROJECT_ID> and <TOKEN>)
+PATCH http://localhost:8080/api/tasks/update/<TASK_ID>
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "project_id": "<PROJECT_ID>"
+}
+
+### Update task Tags (replace <TASK_ID> and <TOKEN>)
+PATCH http://localhost:8080/api/tasks/update/<TASK_ID>
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "tags": []
+}
+
+### ✏️ Update task Status (replace <TASK_ID> and <TOKEN>)
+PATCH http://localhost:8080/api/tasks/update/<TASK_ID>
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "status": "Closed"
+}
+
+### Delete project (replace <TASK_ID> and <TOKEN>)
+DELETE http://localhost:8080/api/tasks/delete/<TASK_ID>
+Authorization: Bearer <TOKEN>
+
+### Start task (replace <TASK_ID> and <TOKEN>)
+GET http://localhost:8080/api/tasks/start/<TASK_ID>
+Authorization: Bearer <TOKEN>
+
+### Stop task (replace <TASK_ID> and <TOKEN>)
+GET http://localhost:8080/api/tasks/stop/<TASK_ID>
+Authorization: Bearer <TOKEN>
+
+### Stop All tasks (replace <TASK_ID> and <TOKEN>)
+GET http://localhost:8080/api/tasks/stop-all
+Authorization: Bearer <TOKEN>
+
+### Close task (replace <TASK_ID> and <TOKEN>)
+GET http://localhost:8080/api/tasks/close/<TASK_ID>
+Authorization: Bearer <TOKEN>

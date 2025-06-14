@@ -100,6 +100,7 @@ func (projectService *ProjectService) Rename(ctx context.Context, id string, use
 		return err
 	}
 
+	// FIXME check name duplicite
 	updates := map[string]interface{}{"name": newName}
 	return projectService.projectRepo.Update(ctx, id, updates)
 }

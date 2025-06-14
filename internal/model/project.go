@@ -7,6 +7,7 @@ import (
 )
 
 type Project struct {
+	// FIXME id to int
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	Name      string    `gorm:"not null" json:"name"`
 	UserID    uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
