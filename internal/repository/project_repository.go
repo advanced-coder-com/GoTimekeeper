@@ -12,6 +12,7 @@ import (
 type ProjectRepository interface {
 	Create(ctx context.Context, project *model.Project) error
 	Update(ctx context.Context, id string, updates map[string]interface{}) error
+	// FIXME options should be *gormquery.QueryOptions
 	GetFilteredProjects(ctx context.Context, filters []gormquery.FilterGroup, options gormquery.QueryOptions) (
 		[]model.Project,
 		error,
@@ -47,6 +48,7 @@ func (projectRepo *projectRepository) GetFilteredProjects(
 }
 
 func (projectRepo *projectRepository) Update(ctx context.Context, id string, updates map[string]interface{}) error {
+	// FIXME param should be  *model.Project
 	result := projectRepo.database.WithContext(ctx).
 		Model(&model.Project{}).
 		Where("id = ?", id).

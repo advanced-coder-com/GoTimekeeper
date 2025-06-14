@@ -8,6 +8,9 @@ func SetupRoutes(engine *gin.Engine) {
 	// User API
 	setupUserRoutes(engine)
 
-	//Project API
+	// Project API
 	setupProjectRoutes(engine)
+
+	// Task API
+	setupTaskRoutes(engine)
 }
