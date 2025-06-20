@@ -57,7 +57,6 @@ func (projectService *ProjectService) Create(ctx context.Context, userID string,
 	}
 
 	project := &model.Project{
-		ID:        uuid.New(),
 		Name:      input.Name,
 		UserID:    uuid.MustParse(userID),
 		CreatedAt: time.Now(),

@@ -23,8 +23,8 @@ type testingContext struct {
 	Email     string
 	Password  string
 	AuthToken string
-	ProjectID []string
-	TaskID    []int64
+	ProjectID []uint64
+	TaskID    []uint64
 }
 
 const ENV = "../../.env.test"
@@ -67,10 +67,10 @@ func TestHappyScenario(t *testing.T) {
 
 	// 3. Create projects
 	testCreateProject(t, &client, server, testingVariables, "My First Project")
-	t.Logf("✅ Successfully created project with ID %s", testingVariables.ProjectID[0])
+	t.Logf("✅ Successfully created project with ID %d", testingVariables.ProjectID[0])
 
 	testCreateProject(t, &client, server, testingVariables, "My Second Project")
-	t.Logf("✅ Successfully created project with ID %s", testingVariables.ProjectID[1])
+	t.Logf("✅ Successfully created project with ID %d", testingVariables.ProjectID[1])
 
 	// Create tasks
 	testCreateTask(t, &client, server, testingVariables, 0, "First Task of First Project")
@@ -141,15 +141,15 @@ func testCreateProject(
 		t.Fatalf("project creation failed: status %d", projectResp.StatusCode)
 	}
 	var projectData struct {
-		ID   uuid.UUID `json:"id"`
-		Name string    `json:"name"`
+		ID   *uint64 `json:"id"`
+		Name string  `json:"name"`
 	}
 	decodeJSON(t, projectResp.Body, &projectData)
 
-	if projectData.ID == uuid.Nil {
+	if projectData.ID == nil {
 		t.Fatal("invalid project ID returned")
 	}
-	testVars.ProjectID = append(testVars.ProjectID, projectData.ID.String())
+	testVars.ProjectID = append(testVars.ProjectID, *projectData.ID)
 }
 
 func testCreateTask(
@@ -157,10 +157,10 @@ func testCreateTask(
 	client *http.Client,
 	server *httptest.Server,
 	testVars *testingContext,
-	projectIdIndex int,
+	projectIdIndex uint64,
 	taskName string,
 ) {
-	taskBody := map[string]string{
+	taskBody := map[string]interface{}{
 		"name":       taskName,
 		"project_id": testVars.ProjectID[projectIdIndex],
 	}
@@ -169,8 +169,8 @@ func testCreateTask(
 		t.Fatalf("task creation failed: status %d", projectResp.StatusCode)
 	}
 	var taskData struct {
-		ID   *int64 `json:"id"`
-		Name string `json:"name"`
+		ID   *uint64 `json:"id"`
+		Name string  `json:"name"`
 	}
 	decodeJSON(t, projectResp.Body, &taskData)
 
@@ -185,9 +185,9 @@ func testStartTask(
 	client *http.Client,
 	server *httptest.Server,
 	testVars *testingContext,
-	taskId int64,
+	taskId uint64,
 ) {
-	url := server.URL + "/api/tasks/start/" + strconv.FormatInt(taskId, 10)
+	url := server.URL + "/api/tasks/start/" + strconv.FormatUint(taskId, 10)
 
 	taskStartResp := doGetAuth(t, client, url, testVars.AuthToken)
 	if taskStartResp.StatusCode != http.StatusOK {
@@ -200,9 +200,9 @@ func testStopTask(
 	client *http.Client,
 	server *httptest.Server,
 	testVars *testingContext,
-	taskId int64,
+	taskId uint64,
 ) {
-	url := server.URL + "/api/tasks/stop/" + strconv.FormatInt(taskId, 10)
+	url := server.URL + "/api/tasks/stop/" + strconv.FormatUint(taskId, 10)
 
 	taskStartResp := doGetAuth(t, client, url, testVars.AuthToken)
 	if taskStartResp.StatusCode != http.StatusOK {

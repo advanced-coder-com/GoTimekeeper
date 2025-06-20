@@ -33,17 +33,17 @@ type TaskService struct {
 }
 
 type CreateTaskInput struct {
-	Name      string    `json:"name" binding:"required"`
-	ProjectID uuid.UUID `json:"project_id,omitempty"`
-	Tags      []string  `json:"tags"`
-	Status    string    `json:"status"`
+	Name      string   `json:"name" binding:"required"`
+	ProjectID uint64   `json:"project_id,omitempty"`
+	Tags      []string `json:"tags"`
+	Status    string   `json:"status"`
 }
 
 type UpdateTaskInput struct {
-	Name      *string    `json:"name"`
-	ProjectID *uuid.UUID `json:"project_id"`
-	Tags      *[]string  `json:"tags"`
-	Status    *string    `json:"status"`
+	Name      *string   `json:"name"`
+	ProjectID *uint64   `json:"project_id"`
+	Tags      *[]string `json:"tags"`
+	Status    *string   `json:"status"`
 }
 
 func NewTaskService() *TaskService {
@@ -103,7 +103,7 @@ func (taskService *TaskService) GetAllActiveByUser(ctx context.Context, userID s
 	return taskService.repo.GetFilteredTasks(ctx, filters, nil)
 }
 
-func (taskService *TaskService) GetByID(ctx context.Context, taskID int64, userID string) (*model.Task, error) {
+func (taskService *TaskService) GetByID(ctx context.Context, taskID uint64, userID string) (*model.Task, error) {
 	filters := []gormquery.FilterGroup{
 		gormquery.NewFilterGroup(
 			gormquery.NewFilter("id", "=", taskID),
@@ -115,7 +115,7 @@ func (taskService *TaskService) GetByID(ctx context.Context, taskID int64, userI
 
 func (taskService *TaskService) Update(
 	ctx context.Context,
-	taskID int64,
+	taskID uint64,
 	userID string,
 	input UpdateTaskInput,
 ) (*model.Task, error) {
@@ -157,7 +157,7 @@ func (taskService *TaskService) Update(
 	return task, err
 }
 
-func (taskService *TaskService) Delete(ctx context.Context, taskID int64, userID string) error {
+func (taskService *TaskService) Delete(ctx context.Context, taskID uint64, userID string) error {
 	task, err := taskService.GetByID(ctx, taskID, userID)
 	if err != nil {
 		return err
@@ -165,7 +165,7 @@ func (taskService *TaskService) Delete(ctx context.Context, taskID int64, userID
 	return taskService.repo.Delete(ctx, task)
 }
 
-func (taskService *TaskService) Start(ctx context.Context, taskID int64, userID string) error {
+func (taskService *TaskService) Start(ctx context.Context, taskID uint64, userID string) error {
 	task, err := taskService.GetByID(ctx, taskID, userID)
 	if err != nil {
 		return err
@@ -182,7 +182,7 @@ func (taskService *TaskService) Start(ctx context.Context, taskID int64, userID 
 	return taskService.repo.Update(ctx, task)
 }
 
-func (taskService *TaskService) Stop(ctx context.Context, taskID int64, userID string) error {
+func (taskService *TaskService) Stop(ctx context.Context, taskID uint64, userID string) error {
 	task, err := taskService.GetByID(ctx, taskID, userID)
 	if err != nil {
 		return err
@@ -222,7 +222,7 @@ func (taskService *TaskService) StopAll(ctx context.Context, userID string) erro
 	return nil
 }
 
-func (taskService *TaskService) Close(ctx context.Context, id int64, userID string) error {
+func (taskService *TaskService) Close(ctx context.Context, id uint64, userID string) error {
 	task, err := taskService.GetByID(ctx, id, userID)
 	if err != nil {
 		return err
@@ -243,7 +243,7 @@ func (taskService *TaskService) Close(ctx context.Context, id int64, userID stri
 func (taskService *TaskService) checkExisting(
 	ctx context.Context,
 	userID uuid.UUID,
-	projectID uuid.UUID,
+	projectID uint64,
 	name string,
 ) (bool, error) {
 	filters := []gormquery.FilterGroup{

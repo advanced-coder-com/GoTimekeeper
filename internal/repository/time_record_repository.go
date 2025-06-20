@@ -10,8 +10,8 @@ import (
 
 type TimeRecordRepository interface {
 	Create(ctx context.Context, timeRecord *model.TimeRecord) error
-	GetByID(ctx context.Context, id uint) (*model.TimeRecord, error)
-	GetByTaskID(ctx context.Context, taskID int64) (*[]model.TimeRecord, error)
+	GetByID(ctx context.Context, id uint64) (*model.TimeRecord, error)
+	GetByTaskID(ctx context.Context, taskID uint64) (*[]model.TimeRecord, error)
 	GetFilteredTimeRecords(
 		ctx context.Context,
 		filters []gormquery.FilterGroup,
@@ -33,7 +33,7 @@ func (timeRecordRepo *timeRecordRepository) Create(ctx context.Context, timeReco
 	return timeRecordRepo.database.WithContext(ctx).Create(timeRecord).Error
 }
 
-func (timeRecordRepo *timeRecordRepository) GetByID(ctx context.Context, id uint) (*model.TimeRecord, error) {
+func (timeRecordRepo *timeRecordRepository) GetByID(ctx context.Context, id uint64) (*model.TimeRecord, error) {
 	var timeRecord model.TimeRecord
 	filters := []gormquery.FilterGroup{
 		gormquery.NewFilterGroup(
@@ -48,7 +48,7 @@ func (timeRecordRepo *timeRecordRepository) GetByID(ctx context.Context, id uint
 	return &timeRecord, nil
 }
 
-func (timeRecordRepo *timeRecordRepository) GetByTaskID(ctx context.Context, taskID int64) (*[]model.TimeRecord, error) {
+func (timeRecordRepo *timeRecordRepository) GetByTaskID(ctx context.Context, taskID uint64) (*[]model.TimeRecord, error) {
 	var timeRecords []model.TimeRecord
 	filters := []gormquery.FilterGroup{
 		gormquery.NewFilterGroup(

@@ -20,7 +20,7 @@ type TimeRecordService struct {
 }
 
 type UpdateTimeRecordInput struct {
-	TaskID    *int64
+	TaskID    *uint64
 	StartTime *time.Time
 	EndTime   *time.Time
 	IsClosed  *bool
@@ -33,7 +33,7 @@ func NewTimeRecordService() *TimeRecordService {
 func (timeRecordService *TimeRecordService) Create(
 	ctx context.Context,
 	userID string,
-	taskID int64,
+	taskID uint64,
 ) (*model.TimeRecord, error) {
 
 	timeRecord := &model.TimeRecord{
@@ -50,17 +50,17 @@ func (timeRecordService *TimeRecordService) Create(
 	return timeRecord, err
 }
 
-func (timeRecordService *TimeRecordService) GetByID(ctx context.Context, id uint) (*model.TimeRecord, error) {
+func (timeRecordService *TimeRecordService) GetByID(ctx context.Context, id uint64) (*model.TimeRecord, error) {
 	return timeRecordService.repo.GetByID(ctx, id)
 }
 
-func (timeRecordService *TimeRecordService) GetByTaskID(ctx context.Context, taskID int64) (*[]model.TimeRecord, error) {
+func (timeRecordService *TimeRecordService) GetByTaskID(ctx context.Context, taskID uint64) (*[]model.TimeRecord, error) {
 	return timeRecordService.repo.GetByTaskID(ctx, taskID)
 }
 
 func (timeRecordService *TimeRecordService) Update(
 	ctx context.Context,
-	id uint,
+	id uint64,
 	input UpdateTimeRecordInput,
 ) (*model.TimeRecord, error) {
 	timeRecord, err := timeRecordService.GetByID(ctx, id)
@@ -92,7 +92,7 @@ func (timeRecordService *TimeRecordService) Update(
 	return timeRecord, err
 }
 
-func (timeRecordService *TimeRecordService) CloseByTaskID(ctx context.Context, taskID int64) error {
+func (timeRecordService *TimeRecordService) CloseByTaskID(ctx context.Context, taskID uint64) error {
 	searchResult, err := timeRecordService.getActiveTimeRecordsByTaskId(ctx, taskID)
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func (timeRecordService *TimeRecordService) CloseByTaskID(ctx context.Context, t
 	return nil
 }
 
-func (timeRecordService *TimeRecordService) Delete(ctx context.Context, id uint) error {
+func (timeRecordService *TimeRecordService) Delete(ctx context.Context, id uint64) error {
 	timeRecord, err := timeRecordService.GetByID(ctx, id)
 	if err != nil {
 		return err
@@ -134,7 +134,7 @@ func (timeRecordService *TimeRecordService) createTimeRecordValidate(
 
 func (timeRecordService *TimeRecordService) getActiveTimeRecordsByTaskId(
 	ctx context.Context,
-	taskID int64,
+	taskID uint64,
 ) (*[]model.TimeRecord, error) {
 	filters := []gormquery.FilterGroup{
 		gormquery.NewFilterGroup(
