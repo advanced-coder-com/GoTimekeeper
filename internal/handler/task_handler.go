@@ -34,7 +34,6 @@ func (taskHandler *TaskHandler) Create(ctx *gin.Context) {
 	task, err := taskHandler.service.Create(ctx.Request.Context(), userID, input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrTaskCreateFailed.Error()})
-
 		return
 	}
 
@@ -67,7 +66,7 @@ func (taskHandler *TaskHandler) ListActive(ctx *gin.Context) {
 
 func (taskHandler *TaskHandler) GetByID(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
-	taskID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrTaskInvalidInput.Error()})
 		return
@@ -84,7 +83,7 @@ func (taskHandler *TaskHandler) GetByID(ctx *gin.Context) {
 
 func (taskHandler *TaskHandler) Update(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
-	taskID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrTaskInvalidInput.Error()})
 		return
@@ -108,7 +107,7 @@ func (taskHandler *TaskHandler) Update(ctx *gin.Context) {
 
 func (taskHandler *TaskHandler) Delete(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
-	taskID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrTaskInvalidInput.Error()})
 		return
@@ -124,7 +123,7 @@ func (taskHandler *TaskHandler) Delete(ctx *gin.Context) {
 
 func (taskHandler *TaskHandler) Start(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
-	taskID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrTaskInvalidInput.Error()})
 		return
@@ -138,7 +137,7 @@ func (taskHandler *TaskHandler) Start(ctx *gin.Context) {
 
 func (taskHandler *TaskHandler) Stop(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
-	taskID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrTaskInvalidInput.Error()})
 		return
@@ -162,7 +161,7 @@ func (taskHandler *TaskHandler) StopAll(ctx *gin.Context) {
 
 func (taskHandler *TaskHandler) Close(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
-	taskID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrTaskInvalidInput.Error()})
 		return

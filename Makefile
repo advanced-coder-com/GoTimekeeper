@@ -1,6 +1,11 @@
 # === CONFIG ===
 MIGRATIONS_DIR = migrations
 DB_URL = postgres://user:password@localhost:5432/timekeeper?sslmode=disable
+TEST_DB_URL = postgres://user:password@localhost:5432/timekeeper_test?sslmode=disable
+
+# === TEST MIGRATIONS ===
+migrate-test-up:
+	migrate -path $(MIGRATIONS_DIR) -database "$(TEST_DB_URL)" up
 
 # === MIGRATIONS ===
 migrate-up:

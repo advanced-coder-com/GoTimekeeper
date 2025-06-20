@@ -33,6 +33,13 @@ func (taskRepo *taskRepository) Create(ctx context.Context, task *model.Task) er
 }
 
 func (taskRepo *taskRepository) GetByID(ctx context.Context, filters []gormquery.FilterGroup) (*model.Task, error) {
+	// Fixme get ID in params
+	//filters := []gormquery.FilterGroup{
+	//	gormquery.NewFilterGroup(
+	//		gormquery.NewFilter("id", "=", taskID),
+	//		gormquery.NewFilter("user_id", "=", userID),
+	//	),
+	//}
 	var task model.Task
 	query := taskRepo.database.WithContext(ctx).Model(&model.Task{})
 	query = gormquery.ApplyFilters(query, filters)
