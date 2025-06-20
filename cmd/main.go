@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/advanced-coder-com/go-timekeeper/internal/router"
-	"log"
-
+	"fmt"
 	"github.com/advanced-coder-com/go-timekeeper/internal/db"
+	"github.com/advanced-coder-com/go-timekeeper/internal/logs"
+	"github.com/advanced-coder-com/go-timekeeper/internal/router"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -14,17 +14,22 @@ const ENV = ".env"
 func initConfig() {
 	viper.SetConfigFile(ENV)
 	viper.AutomaticEnv()
+	viper.SetConfigType("env")
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("No .env file found or error reading it: %v", err)
+		logger.Error("No .env file found or error reading it: %v", err)
 	}
 }
 
+var logger logs.Logger
+
 func main() {
+	logger := logs.Get()
 	initConfig()
 
 	port := viper.GetString("APP_PORT")
 	if port == "" {
+		logger.Fatal("No APP_PORT environment variable found")
 		panic("No APP_PORT environment variable found")
 	}
 
@@ -32,9 +37,11 @@ func main() {
 
 	engine := gin.Default()
 	router.SetupRoutes(engine)
-
-	log.Printf("🚀 Starting server on port %s...", port)
+	logger.Info("🚀 Starting server on port %s...", port)
 	if err := engine.Run(":" + port); err != nil {
-		log.Fatalf("Server failed: %v", err)
+		logger.Fatal("Server failed: %v", err)
+		if viper.GetString("DEBUG") == "true" {
+			fmt.Printf("Server failed: %v\n", err)
+		}
 	}
 }

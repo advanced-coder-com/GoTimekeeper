@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/advanced-coder-com/go-timekeeper/internal/db"
 	"github.com/advanced-coder-com/go-timekeeper/internal/gormquery"
 	"github.com/advanced-coder-com/go-timekeeper/internal/model"
@@ -25,12 +27,18 @@ type timeRecordRepository struct {
 	database *gorm.DB
 }
 
+const timeRecordRepoErrorPrefix = "TimeRecordRepository"
+
 func NewTimeRecordRepository() TimeRecordRepository {
 	return &timeRecordRepository{database: db.Get()}
 }
 
 func (timeRecordRepo *timeRecordRepository) Create(ctx context.Context, timeRecord *model.TimeRecord) error {
-	return timeRecordRepo.database.WithContext(ctx).Create(timeRecord).Error
+	err := timeRecordRepo.database.WithContext(ctx).Create(timeRecord).Error
+	if err != nil {
+		err = fmt.Errorf("%s create time record failed: %w", timeRecordRepoErrorPrefix, err)
+	}
+	return err
 }
 
 func (timeRecordRepo *timeRecordRepository) GetByID(ctx context.Context, id uint64) (*model.TimeRecord, error) {
@@ -43,7 +51,7 @@ func (timeRecordRepo *timeRecordRepository) GetByID(ctx context.Context, id uint
 	query := timeRecordRepo.database.WithContext(ctx).Model(&model.TimeRecord{})
 	query = gormquery.ApplyFilters(query, filters)
 	if err := query.First(&timeRecord).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s find time record by id failed: %w", timeRecordRepoErrorPrefix, err)
 	}
 	return &timeRecord, nil
 }
@@ -58,6 +66,7 @@ func (timeRecordRepo *timeRecordRepository) GetByTaskID(ctx context.Context, tas
 	query := timeRecordRepo.database.WithContext(ctx).Model(&model.TimeRecord{})
 	query = gormquery.ApplyFilters(query, filters)
 	if err := query.Find(&timeRecords).Error; err != nil {
+		err = fmt.Errorf("%s find time records by task id failed: %w", timeRecordRepoErrorPrefix, err)
 		return nil, err
 	}
 
@@ -77,17 +86,35 @@ func (timeRecordRepo *timeRecordRepository) GetFilteredTimeRecords(
 		query = gormquery.ApplyQueryOptions(query, *options)
 	}
 	err := query.Find(&timeRecords).Error
+	if err != nil {
+		err = fmt.Errorf("%s find filtered time records failed: %w", timeRecordRepoErrorPrefix, err)
+	}
 	return &timeRecords, err
 }
 
 func (timeRecordRepo *timeRecordRepository) Update(ctx context.Context, timeRecord *model.TimeRecord) error {
-	return timeRecordRepo.database.WithContext(ctx).Save(timeRecord).Error
+	err := timeRecordRepo.database.WithContext(ctx).Save(timeRecord).Error
+	if err != nil {
+		err = fmt.Errorf("%s update time record failed: %w", timeRecordRepoErrorPrefix, err)
+	}
+	return err
 }
 
 func (timeRecordRepo *timeRecordRepository) Delete(ctx context.Context, timeRecord *model.TimeRecord) error {
-	return timeRecordRepo.database.
+	result := timeRecordRepo.database.
 		WithContext(ctx).
 		Where("id = ?", timeRecord.ID).
-		Delete(&model.TimeRecord{}).
-		Error
+		Delete(&model.TimeRecord{})
+	if result.Error != nil {
+		return fmt.Errorf("%s delete time record failed: %w", timeRecordRepoErrorPrefix, result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return errors.New(
+			fmt.Sprintf(
+				"%s delete time record failed: time record you try to delete does not exist",
+				timeRecordRepoErrorPrefix,
+			),
+		)
+	}
+	return nil
 }

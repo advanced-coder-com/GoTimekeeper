@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/advanced-coder-com/go-timekeeper/internal/logs"
 	"log"
 	"sync"
 
@@ -13,6 +14,7 @@ import (
 var (
 	instance *gorm.DB
 	once     sync.Once
+	logger   logs.Logger = *logs.Get()
 )
 
 func Init() {
@@ -28,11 +30,11 @@ func Init() {
 
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
-			log.Fatalf("❌ Failed to connect to database: %v", err)
+			logger.Fatal("❌ Failed to connect to database: %v", err)
 		}
 
 		instance = db
-		log.Println("✅ Database connection established")
+		logger.Info("✅ Database connection established")
 	})
 }
 

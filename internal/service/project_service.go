@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"strings"
 	"time"
@@ -14,12 +15,11 @@ import (
 )
 
 var (
-	ErrProjectNotFound      = errors.New("project not found")
-	ErrProjectAlreadyExists = errors.New("project with this name already exists for this user")
-	ErrProjectDeleteFailed  = errors.New("failed to delete project")
-	ErrProjectCreateFailed  = errors.New("failed to create project")
-	ErrProjectUpdateFailed  = errors.New("failed to update project")
-	ErrProjectListFailed    = errors.New("failed to list projects")
+	ErrProjectDeleteFailed = errors.New("failed to delete project")
+	ErrProjectCreateFailed = errors.New("failed to create project")
+	ErrProjectUpdateFailed = errors.New("failed to update project")
+	ErrProjectGetFailed    = errors.New("failed to get project(s)")
+	ErrProjectInvalidInput = errors.New("invalid input")
 )
 
 type ProjectInput struct {
@@ -29,6 +29,8 @@ type ProjectInput struct {
 type ProjectService struct {
 	projectRepo repository.ProjectRepository
 }
+
+const projectServiceLogPrefix = "ProjectService"
 
 func NewProjectService() *ProjectService {
 	return &ProjectService{
@@ -53,7 +55,9 @@ func (projectService *ProjectService) Create(ctx context.Context, userID string,
 		return nil, err
 	}
 	if len(existing) > 0 {
-		return nil, ErrProjectAlreadyExists
+		return nil, errors.New(
+			fmt.Sprintf("%s project with this name already exists for this user", projectServiceLogPrefix),
+		)
 	}
 
 	project := &model.Project{
@@ -88,7 +92,7 @@ func (projectService *ProjectService) GetByID(ctx context.Context, id string, us
 		return nil, err
 	}
 	if len(projects) == 0 {
-		return nil, gorm.ErrRecordNotFound
+		return nil, fmt.Errorf("%s: %w", projectServiceLogPrefix, gorm.ErrRecordNotFound)
 	}
 	return &projects[0], nil
 }
