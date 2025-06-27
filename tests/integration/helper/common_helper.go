@@ -10,8 +10,6 @@ import (
 	"testing"
 )
 
-const ENV = "../../.env.test"
-
 type TestingContext struct {
 	Email     string
 	Password  string
@@ -20,8 +18,8 @@ type TestingContext struct {
 	TaskID    []uint64
 }
 
-func InitConfig() {
-	viper.SetConfigFile(ENV)
+func InitConfig(env string) {
+	viper.SetConfigFile(env)
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 

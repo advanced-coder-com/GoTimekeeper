@@ -17,7 +17,7 @@ import (
 
 func TestHappyScenario(t *testing.T) {
 	_ = os.Setenv("APP_ENV_FILE", ".env.test")
-	helper.InitConfig()
+	helper.InitConfig("../../.env.test")
 	fmt.Println(viper.GetString("DB_HOST"))
 	db.Init()
 
