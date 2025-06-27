@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/advanced-coder-com/go-timekeeper/internal/validator"
 	"github.com/google/uuid"
-	"strings"
 	"time"
 
 	"github.com/advanced-coder-com/go-timekeeper/internal/model"
@@ -51,15 +51,17 @@ func NewUserService() *UserService {
 	return &UserService{repo: repo}
 }
 
-func (s *UserService) Signup(ctx context.Context, input UserInput) (*model.User, error) {
+func (userService *UserService) Signup(ctx context.Context, input UserInput) (*model.User, error) {
 	err := input.validateUserInput()
 	if err != nil {
-		err = fmt.Errorf("%s: %w", userServiceLogPrefix, err)
-		return nil, err
+		return nil, WrapPublicMessage(err, err.Error())
 	}
-	existing, _ := s.repo.FindByEmail(ctx, input.Email)
+	existing, _ := userService.repo.GetByEmail(ctx, input.Email)
 	if existing != nil {
-		return nil, errors.New(fmt.Sprintf("%s user with this email exists", userServiceLogPrefix))
+		message := fmt.Sprintf("User with email %s already exists", input.Email)
+
+		err = errors.New(message)
+		return nil, WrapPublicMessage(err, message)
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
@@ -75,19 +77,19 @@ func (s *UserService) Signup(ctx context.Context, input UserInput) (*model.User,
 		UpdatedAt: time.Now(),
 	}
 
-	if err := s.repo.Create(ctx, user); err != nil {
+	if err := userService.repo.Create(ctx, user); err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (s *UserService) Signin(ctx context.Context, input UserInput) (*model.User, error) {
+func (userService *UserService) Signin(ctx context.Context, input UserInput) (*model.User, error) {
 	err := input.validateUserInput()
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
 
 	}
-	user, err := s.repo.FindByEmail(ctx, input.Email)
+	user, err := userService.repo.GetByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -98,15 +100,15 @@ func (s *UserService) Signin(ctx context.Context, input UserInput) (*model.User,
 	return user, nil
 }
 
-func (s *UserService) GetUser(ctx context.Context, userId string) (*model.User, error) {
-	user, err := s.repo.FindByID(ctx, userId)
+func (userService *UserService) GetUser(ctx context.Context, userId string) (*model.User, error) {
+	user, err := userService.repo.GetByID(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (s *UserService) ChangePassword(ctx context.Context, userID string, input ChangePasswordInput) error {
+func (userService *UserService) ChangePassword(ctx context.Context, userID string, input ChangePasswordInput) error {
 	if input.OldPassword == "" || input.NewPassword == "" {
 		return errors.New(fmt.Sprintf("%s both old and new passwords are required", userServiceLogPrefix))
 	}
@@ -114,7 +116,7 @@ func (s *UserService) ChangePassword(ctx context.Context, userID string, input C
 		return errors.New(fmt.Sprintf("%s Old password must not be same as a new one", userServiceLogPrefix))
 	}
 
-	user, err := s.repo.FindByID(ctx, userID)
+	user, err := userService.repo.GetByID(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -131,18 +133,33 @@ func (s *UserService) ChangePassword(ctx context.Context, userID string, input C
 	user.Password = string(hashed)
 	user.UpdatedAt = time.Now()
 
-	return s.repo.Update(ctx, user)
+	return userService.repo.Update(ctx, user)
 }
 
-func (s *UserService) Delete(ctx context.Context, userId string) error {
-	return s.repo.DeleteByID(ctx, userId)
+func (userService *UserService) Delete(ctx context.Context, userId string) error {
+	user, err := userService.repo.GetByID(ctx, userId)
+	if err != nil {
+		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+	}
+	err = userService.repo.Delete(ctx, user)
+	if err != nil {
+		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+	}
+	return nil
 }
 
 // validation of user input
 func (input *UserInput) validateUserInput() error {
-	input.Email = strings.TrimSpace(strings.ToLower(input.Email))
-	if input.Email == "" || input.Password == "" {
-		return errors.New("email and password must be provided")
+	err := validator.ValidateEmail(input.Email)
+	if err != nil {
+
+		return errors.New("invalid email")
+		//return NewError(fmt.Errorf("%s: %w", userServiceLogPrefix, err), *err.Error())
+	}
+	err = validator.ValidatePassword(input.Password)
+	if err != nil {
+		//return NewError(err.Error(), fmt.Errorf("%s: %w", userServiceLogPrefix, err))
+		return err
 	}
 	return nil
 }
