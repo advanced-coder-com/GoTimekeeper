@@ -11,10 +11,10 @@ import (
 
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
-	FindByEmail(ctx context.Context, email string) (*model.User, error)
-	DeleteByID(ctx context.Context, id string) error
-	FindByID(ctx context.Context, id string) (*model.User, error)
+	GetByEmail(ctx context.Context, email string) (*model.User, error)
+	GetByID(ctx context.Context, id string) (*model.User, error)
 	Update(ctx context.Context, user *model.User) error
+	Delete(ctx context.Context, user *model.User) error
 }
 
 type userRepository struct {
@@ -35,21 +35,21 @@ func (repository *userRepository) Create(ctx context.Context, user *model.User) 
 	return err
 }
 
-func (repository *userRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
+func (repository *userRepository) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user model.User
 	err := repository.db.WithContext(ctx).Where("email = ?", email).First(&user).Error
 	if err != nil {
-		err = fmt.Errorf("%s find user by email failed: %w", userRepoErrorPrefix, err)
+		err = fmt.Errorf("%s get user by email failed: %w", userRepoErrorPrefix, err)
 		return nil, err
 	}
 	return &user, nil
 }
 
-func (repository *userRepository) FindByID(ctx context.Context, id string) (*model.User, error) {
+func (repository *userRepository) GetByID(ctx context.Context, id string) (*model.User, error) {
 	var user model.User
 	err := repository.db.WithContext(ctx).First(&user, "id = ?", id).Error
 	if err != nil {
-		err = fmt.Errorf("%s find user by id failed: %w", userRepoErrorPrefix, err)
+		err = fmt.Errorf("%s get user by id failed: %w", userRepoErrorPrefix, err)
 		return nil, err
 	}
 	return &user, nil
@@ -63,12 +63,10 @@ func (repository *userRepository) Update(ctx context.Context, user *model.User) 
 	return err
 }
 
-func (repository *userRepository) DeleteByID(ctx context.Context, id string) error {
-
-	result := repository.db.WithContext(ctx).Where("id = ?", id).Delete(&model.User{})
+func (repository *userRepository) Delete(ctx context.Context, user *model.User) error {
+	result := repository.db.WithContext(ctx).Delete(user)
 	if result.Error != nil {
-		result.Error = fmt.Errorf("%s delete user failed: %w", userRepoErrorPrefix, result.Error)
-		return result.Error
+		return fmt.Errorf("%s delete user failed: %w", userRepoErrorPrefix, result.Error)
 	}
 	if result.RowsAffected == 0 {
 		return errors.New(

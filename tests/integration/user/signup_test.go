@@ -42,7 +42,7 @@ func TestSignUpSuccess(t *testing.T) {
 	}
 
 	userRepo := repository.NewUserRepository()
-	user, err := userRepo.FindByEmail(context.Background(), testingVariables.Email)
+	user, err := userRepo.GetByEmail(context.Background(), testingVariables.Email)
 	if err != nil {
 		t.Fatalf("❌ Could not find created user by email: %s. Error: %v", testingVariables.Email, err)
 	}
