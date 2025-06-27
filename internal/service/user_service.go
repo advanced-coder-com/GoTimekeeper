@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"strings"
 	"time"
@@ -14,16 +15,17 @@ import (
 
 // User related errors
 var (
-	ErrUserInvalidInput              = errors.New("email and password must be provided")
-	ErrUserUnauthorized              = errors.New("unauthorized")
-	ErrUserInvalidCredentials        = errors.New("invalid email or password")
-	ErrUserEmailTaken                = errors.New("email already registered")
-	ErrUserTokenInvalid              = errors.New("invalid or expired token")
-	ErrUserMissingAuthHeader         = errors.New("missing authorization header")
-	ErrUserInvalidAuthHeader         = errors.New("invalid authorization header")
-	ErrUserMissingJWTSecret          = errors.New("missing JWT_SECRET")
-	ErrUserTokenGenerationFailed     = errors.New("token generation failed")
-	ErrUserChangePasswordInputFailed = errors.New("both old and new passwords are required")
+	ErrUserUnauthorized         = errors.New("user is unauthorized")
+	ErrUserTokenInvalid         = errors.New("invalid or expired token")
+	ErrUserMissingAuthHeader    = errors.New("missing authorization header")
+	ErrUserInvalidAuthHeader    = errors.New("invalid authorization header")
+	ErrUserMissingJWTSecret     = errors.New("missing JWT_SECRET")
+	ErrUserInvalidInput         = errors.New("invalid input")
+	ErrUserSignInFailed         = errors.New("user sign in failed")
+	ErrUserSignUpFailed         = errors.New("user sign up failed")
+	ErrGetUserFailed            = errors.New("cannot get user with provided credentials")
+	ErrUserDeleteFailed         = errors.New("cannot delete user")
+	ErrUserChangePasswordFailed = errors.New("changing password failed")
 )
 
 // UserInput Input for user API routes
@@ -42,6 +44,8 @@ type UserService struct {
 	repo repository.UserRepository
 }
 
+const userServiceLogPrefix = "UserService"
+
 func NewUserService() *UserService {
 	repo := repository.NewUserRepository()
 	return &UserService{repo: repo}
@@ -50,16 +54,17 @@ func NewUserService() *UserService {
 func (s *UserService) Signup(ctx context.Context, input UserInput) (*model.User, error) {
 	err := input.validateUserInput()
 	if err != nil {
+		err = fmt.Errorf("%s: %w", userServiceLogPrefix, err)
 		return nil, err
 	}
 	existing, _ := s.repo.FindByEmail(ctx, input.Email)
 	if existing != nil {
-		return nil, ErrUserEmailTaken
+		return nil, errors.New(fmt.Sprintf("%s user with this email exists", userServiceLogPrefix))
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
 	}
 
 	user := &model.User{
@@ -73,24 +78,23 @@ func (s *UserService) Signup(ctx context.Context, input UserInput) (*model.User,
 	if err := s.repo.Create(ctx, user); err != nil {
 		return nil, err
 	}
-
 	return user, nil
 }
 
 func (s *UserService) Signin(ctx context.Context, input UserInput) (*model.User, error) {
 	err := input.validateUserInput()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+
 	}
 	user, err := s.repo.FindByEmail(ctx, input.Email)
 	if err != nil {
-		return nil, ErrUserInvalidCredentials
+		return nil, err
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		return nil, ErrUserInvalidCredentials
+		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
 	}
-
 	return user, nil
 }
 
@@ -104,7 +108,10 @@ func (s *UserService) GetUser(ctx context.Context, userId string) (*model.User, 
 
 func (s *UserService) ChangePassword(ctx context.Context, userID string, input ChangePasswordInput) error {
 	if input.OldPassword == "" || input.NewPassword == "" {
-		return ErrUserChangePasswordInputFailed
+		return errors.New(fmt.Sprintf("%s both old and new passwords are required", userServiceLogPrefix))
+	}
+	if input.OldPassword == input.NewPassword {
+		return errors.New(fmt.Sprintf("%s Old password must not be same as a new one", userServiceLogPrefix))
 	}
 
 	user, err := s.repo.FindByID(ctx, userID)
@@ -113,12 +120,12 @@ func (s *UserService) ChangePassword(ctx context.Context, userID string, input C
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword)); err != nil {
-		return ErrUserInvalidCredentials
+		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
 	}
 
 	hashed, err := bcrypt.GenerateFromPassword([]byte(input.NewPassword), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
 	}
 
 	user.Password = string(hashed)
@@ -135,7 +142,7 @@ func (s *UserService) Delete(ctx context.Context, userId string) error {
 func (input *UserInput) validateUserInput() error {
 	input.Email = strings.TrimSpace(strings.ToLower(input.Email))
 	if input.Email == "" || input.Password == "" {
-		return ErrUserInvalidInput
+		return errors.New("email and password must be provided")
 	}
 	return nil
 }

@@ -14,14 +14,12 @@ import (
 )
 
 var (
-	ErrTaskNotFound           = errors.New("task not found")
-	ErrTaskAlreadyExists      = errors.New("task with this name already exists for this user")
 	ErrTaskDeleteFailed       = errors.New("failed to delete task")
 	ErrTaskCreateFailed       = errors.New("failed to create task")
 	ErrTaskUpdateFailed       = errors.New("failed to update task")
 	ErrTaskStartFailed        = errors.New("failed to start task")
 	ErrTaskStopFailed         = errors.New("failed to stop task")
-	ErrTaskListFailed         = errors.New("failed to list task")
+	ErrTaskGetFailed          = errors.New("failed to get task(s)")
 	ErrTaskInvalidInput       = errors.New("invalid input")
 	ErrTaskInvalidInputStatus = errors.New("invalid input status")
 	ErrTaskHasInvalidStatus   = errors.New("task has invalid status for this action")
@@ -45,6 +43,8 @@ type UpdateTaskInput struct {
 	Tags      *[]string `json:"tags"`
 	Status    *string   `json:"status"`
 }
+
+const taskServiceLogPrefix = "TaskService"
 
 func NewTaskService() *TaskService {
 	return &TaskService{
@@ -74,7 +74,9 @@ func (taskService *TaskService) Create(ctx context.Context, userID string, input
 		return nil, err
 	}
 	if exists {
-		return nil, ErrTaskAlreadyExists
+		return nil, errors.New(
+			fmt.Sprintf("%s: combination of task name and project should be unique", taskServiceLogPrefix),
+		)
 	}
 	err = taskService.repo.Create(ctx, task)
 	return task, err
@@ -138,7 +140,7 @@ func (taskService *TaskService) Update(
 
 	if input.Status != nil && string(task.Status) != *input.Status {
 		if !model.IsValidTaskStatus(*input.Status) {
-			return nil, fmt.Errorf("invalid status")
+			return nil, fmt.Errorf("%s: invalid input status", taskServiceLogPrefix)
 		}
 		task.Status = model.TaskStatus(*input.Status)
 	}
@@ -150,7 +152,9 @@ func (taskService *TaskService) Update(
 		return nil, err
 	}
 	if exists {
-		return nil, ErrTaskAlreadyExists
+		return nil, errors.New(
+			fmt.Sprintf("%s: combination of task name and project should be unique", taskServiceLogPrefix),
+		)
 	}
 	err = taskService.repo.Update(ctx, task)
 
@@ -171,7 +175,7 @@ func (taskService *TaskService) Start(ctx context.Context, taskID uint64, userID
 		return err
 	}
 	if !checkIfTaskIsNotClosed(task) || !checkIfTaskIsNotWorkingOn(task) {
-		return ErrTaskHasInvalidStatus
+		return fmt.Errorf("%s: %w", taskServiceLogPrefix, ErrTaskHasInvalidStatus)
 	}
 	task.Status = model.StatusWorkingOn
 	task.UpdatedAt = time.Now()
@@ -188,7 +192,7 @@ func (taskService *TaskService) Stop(ctx context.Context, taskID uint64, userID 
 		return err
 	}
 	if !checkIfTaskIsNotClosed(task) || !checkIfTaskIsNotOpened(task) {
-		return ErrTaskHasInvalidStatus
+		return fmt.Errorf("%s: %w", taskServiceLogPrefix, ErrTaskHasInvalidStatus)
 	}
 	task.Status = model.StatusOpened
 	task.UpdatedAt = time.Now()
@@ -206,7 +210,7 @@ func (taskService *TaskService) StopAll(ctx context.Context, userID string) erro
 	}
 	for _, task := range tasks {
 		if !checkIfTaskIsNotClosed(&task) {
-			return ErrTaskHasInvalidStatus
+			return fmt.Errorf("%s: %w", taskServiceLogPrefix, ErrTaskHasInvalidStatus)
 		}
 		task.Status = model.StatusOpened
 		task.UpdatedAt = time.Now()
@@ -228,7 +232,7 @@ func (taskService *TaskService) Close(ctx context.Context, id uint64, userID str
 		return err
 	}
 	if !checkIfTaskIsNotClosed(task) || !checkIfTaskIsNotOpened(task) {
-		return ErrTaskHasInvalidStatus
+		return fmt.Errorf("%s: %w", taskServiceLogPrefix, ErrTaskHasInvalidStatus)
 	}
 	task.Status = model.StatusClosed
 	task.UpdatedAt = time.Now()

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/advanced-coder-com/go-timekeeper/internal/gormquery"
 	"github.com/advanced-coder-com/go-timekeeper/internal/model"
 	"github.com/advanced-coder-com/go-timekeeper/internal/repository"
@@ -10,14 +11,11 @@ import (
 	"time"
 )
 
-var (
-	ErrTimeRecordCreationFailed = errors.New("cannot create time record fot task has not closed time record")
-	ErrTimeRecordMultipleActive = errors.New("task has more that one active time record")
-)
-
 type TimeRecordService struct {
 	repo repository.TimeRecordRepository
 }
+
+const timeRecordServiceErrorPrefix = "TimeRecordService"
 
 type UpdateTimeRecordInput struct {
 	TaskID    *uint64
@@ -98,7 +96,9 @@ func (timeRecordService *TimeRecordService) CloseByTaskID(ctx context.Context, t
 		return err
 	}
 	if len(*searchResult) > 1 {
-		return ErrTimeRecordMultipleActive
+		return errors.New(
+			fmt.Sprintf("%s: task has more that one active time record", timeRecordServiceErrorPrefix),
+		)
 	}
 	for _, timeRecord := range *searchResult {
 		now := time.Now()
@@ -127,7 +127,9 @@ func (timeRecordService *TimeRecordService) createTimeRecordValidate(
 		return err
 	}
 	if len(*searchResult) > 0 {
-		return ErrTimeRecordCreationFailed
+		return errors.New(
+			fmt.Sprintf("%s: task also has active time record", timeRecordServiceErrorPrefix),
+		)
 	}
 	return nil
 }

@@ -1,0 +1,378 @@
+2025-06-27T16:41:15.665+0200	FATAL	logs/logger.go:71	❌ Failed to connect to database: failed to connect to `host=localhost user=user database=timekeeper_test`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Fatal
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:71
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init.func1
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:33
+sync.(*Once).doSlow
+	/usr/local/go/src/sync/once.go:78
+sync.(*Once).Do
+	/usr/local/go/src/sync/once.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:21
+github.com/advanced-coder-com/go-timekeeper/tests/integration_test.TestDuplicateEmail
+	/home/pinguin/Documents/GoTimekeeper/tests/integration/user_register_email_duplicate_test.go:22
+testing.tRunner
+	/usr/local/go/src/testing/testing.go:1792
+2025-06-27T16:46:26.854+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T16:46:26.920+0200	ERROR	logs/logger.go:69	UserHandler: UserService user with this email exists
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signup
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:39
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T16:50:06.240+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T16:50:06.293+0200	ERROR	logs/logger.go:69	UserHandler: UserService user with this email exists
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signup
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:39
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T17:06:24.296+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:06:24.358+0200	ERROR	logs/logger.go:69	UserHandler: UserService user with this email exists
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signup
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:39
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T17:07:54.890+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:08:16.000+0200	ERROR	logs/logger.go:69	UserHandler: UserService user with this email exists
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signup
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:39
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T17:08:37.014+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:08:57.865+0200	ERROR	logs/logger.go:69	UserHandler: UserService user with this email exists
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signup
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:39
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T17:33:12.460+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:34:57.560+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:41:09.154+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:41:09.216+0200	ERROR	logs/logger.go:69	UserHandler: UserService user with this email exists
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signup
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:39
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T17:50:49.605+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T17:50:49.717+0200	ERROR	logs/logger.go:69	UserHandler: UserService: crypto/bcrypt: hashedPassword is not the hash of the given password
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signin
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:68
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T18:02:05.788+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:04:26.248+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:04:55.642+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:05:59.486+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:06:05.755+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:07:55.188+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:08:18.246+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:08:18.495+0200	ERROR	logs/logger.go:69	UserHandler: UserService: crypto/bcrypt: hashedPassword is not the hash of the given password
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).Signin
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:68
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T18:08:48.689+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:13:02.388+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:13:02.538+0200	ERROR	logs/logger.go:69	UserHandler: UserService: crypto/bcrypt: hashedPassword is not the hash of the given password
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).ChangePassword
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:119
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/advanced-coder-com/go-timekeeper/internal/router.setupUserRoutes.AuthRequired.func3
+	/home/pinguin/Documents/GoTimekeeper/internal/middleware/auth.go:33
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T18:15:33.698+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:16:20.590+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:17:37.574+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:18:57.536+0200	FATAL	logs/logger.go:71	❌ Failed to connect to database: failed to connect to `host=localhost user=user database=timekeeper_test`: dial error (dial tcp 127.0.0.1:5432: connect: connection refused)
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Fatal
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:71
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init.func1
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:34
+sync.(*Once).doSlow
+	/usr/local/go/src/sync/once.go:78
+sync.(*Once).Do
+	/usr/local/go/src/sync/once.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:22
+github.com/advanced-coder-com/go-timekeeper/tests/integration_test.TestUserChangePasswordSameOldAndNewPasswordsFailed
+	/home/pinguin/Documents/GoTimekeeper/tests/integration/user_change_password_same_old_and_new_passwords_test.go:23
+testing.tRunner
+	/usr/local/go/src/testing/testing.go:1792
+2025-06-27T18:19:20.480+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:19:43.016+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:20:33.756+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:20:33.857+0200	ERROR	logs/logger.go:69	UserHandler: UserService Old password must not be same as a new one
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).ChangePassword
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:119
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/advanced-coder-com/go-timekeeper/internal/router.setupUserRoutes.AuthRequired.func3
+	/home/pinguin/Documents/GoTimekeeper/internal/middleware/auth.go:33
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T18:25:10.741+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:28:15.218+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:28:15.319+0200	ERROR	logs/logger.go:69	UserHandler: UserRepository delete user failed: user you try to delete does not exist
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Error
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).LogError
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:75
+github.com/advanced-coder-com/go-timekeeper/internal/handler.(*UserHandler).DeleteCurrentUser
+	/home/pinguin/Documents/GoTimekeeper/internal/handler/user_handler.go:137
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/advanced-coder-com/go-timekeeper/internal/router.setupUserRoutes.AuthRequired.func2
+	/home/pinguin/Documents/GoTimekeeper/internal/middleware/auth.go:33
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.CustomRecoveryWithWriter.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/home/pinguin/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/usr/local/go/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/usr/local/go/src/net/http/server.go:2102
+2025-06-27T18:47:55.826+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:48:31.201+0200	FATAL	logs/logger.go:71	❌ Failed to connect to database: cannot parse `host= user= password=xxxxx dbname= port= sslmode=disable`: invalid port (strconv.ParseUint: parsing "sslmode=disable": invalid syntax)
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Fatal
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:71
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init.func1
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:34
+sync.(*Once).doSlow
+	/usr/local/go/src/sync/once.go:78
+sync.(*Once).Do
+	/usr/local/go/src/sync/once.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:22
+github.com/advanced-coder-com/go-timekeeper/tests/integration_test.TestHappyScenario
+	/home/pinguin/Documents/GoTimekeeper/tests/integration/happy_scenario_test.go:22
+testing.tRunner
+	/usr/local/go/src/testing/testing.go:1792
+2025-06-27T18:53:09.523+0200	FATAL	logs/logger.go:71	❌ Failed to connect to database: cannot parse `host= user= password=xxxxx dbname= port= sslmode=disable`: invalid port (strconv.ParseUint: parsing "sslmode=disable": invalid syntax)
+github.com/advanced-coder-com/go-timekeeper/internal/logs.(*ZapLogger).Fatal
+	/home/pinguin/Documents/GoTimekeeper/internal/logs/logger.go:71
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init.func1
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:34
+sync.(*Once).doSlow
+	/usr/local/go/src/sync/once.go:78
+sync.(*Once).Do
+	/usr/local/go/src/sync/once.go:69
+github.com/advanced-coder-com/go-timekeeper/internal/db.Init
+	/home/pinguin/Documents/GoTimekeeper/internal/db/connection.go:22
+github.com/advanced-coder-com/go-timekeeper/tests/integration_test.TestHappyScenario
+	/home/pinguin/Documents/GoTimekeeper/tests/integration/happy_scenario_test.go:22
+testing.tRunner
+	/usr/local/go/src/testing/testing.go:1792
+2025-06-27T18:53:30.061+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:56:19.996+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T18:56:36.286+0200	INFO	logs/logger.go:68	✅ Database connection established
+2025-06-27T19:04:21.640+0200	INFO	logs/logger.go:68	✅ Database connection established

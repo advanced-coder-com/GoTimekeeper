@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/advanced-coder-com/go-timekeeper/internal/logs"
 	"net/http"
 
 	"github.com/advanced-coder-com/go-timekeeper/internal/auth"
@@ -9,8 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const userHandlerErrorPrefix = "UserHandler"
+
 type UserHandler struct {
 	userService *service.UserService
+	logger      logs.Logger
 }
 
 func NewUserHandler() *UserHandler {
@@ -18,25 +22,29 @@ func NewUserHandler() *UserHandler {
 
 	return &UserHandler{
 		userService: userService,
+		logger:      logs.Get(),
 	}
 }
 
 func (handler *UserHandler) Signup(ctx *gin.Context) {
 	var input service.UserInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrUserInvalidInput.Error()})
 		return
 	}
 
 	user, err := handler.userService.Signup(context.Background(), input)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrUserSignUpFailed.Error()})
 		return
 	}
 
 	token, err := auth.GenerateJWT(user.ID.String())
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "token generation failed"})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrUserSignUpFailed.Error()})
 		return
 	}
 
@@ -50,19 +58,22 @@ func (handler *UserHandler) Signup(ctx *gin.Context) {
 func (handler *UserHandler) Signin(ctx *gin.Context) {
 	var input service.UserInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrUserInvalidInput.Error()})
 		return
 	}
 
 	user, err := handler.userService.Signin(context.Background(), input)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": service.ErrUserSignInFailed.Error()})
 		return
 	}
 
 	token, err := auth.GenerateJWT(user.ID.String())
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrUserTokenGenerationFailed})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrUserSignInFailed.Error()})
 		return
 	}
 
@@ -76,13 +87,15 @@ func (handler *UserHandler) Signin(ctx *gin.Context) {
 func (handler *UserHandler) Profile(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 	if userID == "" {
+		handler.logger.LogError(userHandlerErrorPrefix, service.ErrUserUnauthorized)
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": service.ErrUserUnauthorized.Error()})
 		return
 	}
 
 	user, err := handler.userService.GetUser(ctx.Request.Context(), userID)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusNotFound, gin.H{"error": service.ErrGetUserFailed.Error()})
 		return
 	}
 
@@ -97,28 +110,32 @@ func (handler *UserHandler) ChangePassword(ctx *gin.Context) {
 
 	var input service.ChangePasswordInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrUserInvalidInput.Error()})
 		return
 	}
 
 	if err := handler.userService.ChangePassword(ctx.Request.Context(), userID, input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrUserChangePasswordFailed.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "password updated"})
+	ctx.Status(http.StatusOK)
 }
 
 func (handler *UserHandler) DeleteCurrentUser(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 	if userID == "" {
+		handler.logger.LogError(userHandlerErrorPrefix, service.ErrUserUnauthorized)
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": service.ErrUserUnauthorized.Error()})
 		return
 	}
 
 	err := handler.userService.Delete(ctx.Request.Context(), userID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		handler.logger.LogError(userHandlerErrorPrefix, err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrUserDeleteFailed.Error()})
 		return
 	}
 
