@@ -14,10 +14,11 @@ import (
 var (
 	instance *gorm.DB
 	once     sync.Once
-	logger   logs.Logger = *logs.Get()
+	logger   logs.Logger
 )
 
 func Init() {
+	logger = logs.Get()
 	once.Do(func() {
 		dsn := fmt.Sprintf(
 			"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",

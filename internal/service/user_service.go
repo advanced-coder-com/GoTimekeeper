@@ -110,6 +110,9 @@ func (s *UserService) ChangePassword(ctx context.Context, userID string, input C
 	if input.OldPassword == "" || input.NewPassword == "" {
 		return errors.New(fmt.Sprintf("%s both old and new passwords are required", userServiceLogPrefix))
 	}
+	if input.OldPassword == input.NewPassword {
+		return errors.New(fmt.Sprintf("%s Old password must not be same as a new one", userServiceLogPrefix))
+	}
 
 	user, err := s.repo.FindByID(ctx, userID)
 	if err != nil {
