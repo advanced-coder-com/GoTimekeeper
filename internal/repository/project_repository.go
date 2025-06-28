@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"gitlab.com/tozd/go/errors"
 
 	"github.com/advanced-coder-com/go-timekeeper/internal/db"
 	"github.com/advanced-coder-com/go-timekeeper/internal/gormquery"

@@ -33,7 +33,7 @@ func TestSignInSuccess(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -61,13 +61,13 @@ func TestSignInFailsWithIncorrectPassword(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
 	}
 
-	testingVariables.Password = "wrong-password"
+	testingVariables.Password = "wrong-P@ssw0rd"
 	ok, resp := helper.SignIn(t, &client, server, testingVariables)
 	if ok {
 		t.Fatalf("❌ Sign in should have failed with incorrect password. Email: %s", testingVariables.Email)

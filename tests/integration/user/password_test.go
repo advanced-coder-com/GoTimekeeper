@@ -33,7 +33,7 @@ func TestChangePasswordSuccess(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -43,7 +43,7 @@ func TestChangePasswordSuccess(t *testing.T) {
 		t.Fatalf("❌ Failed to sign in user. Email: %s", testingVariables.Email)
 	}
 
-	newPassword := "new_password"
+	newPassword := "new_P@ssw0rd"
 	if ok, resp := helper.ChangePassword(t, &client, server, testingVariables, newPassword); !ok {
 		var errorMessage = helper.ErrorMessage
 		helper.DecodeJSON(t, resp.Body, &errorMessage)
@@ -73,7 +73,7 @@ func TestChangePasswordFailsWithInvalidOldPassword(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -82,8 +82,8 @@ func TestChangePasswordFailsWithInvalidOldPassword(t *testing.T) {
 		t.Fatalf("❌ Failed to sign in user. Email: %s", testingVariables.Email)
 	}
 
-	testingVariables.Password = "wrong_old_password"
-	ok, resp := helper.ChangePassword(t, &client, server, testingVariables, "new_password")
+	testingVariables.Password = "wrong_old_P@ssw0rd"
+	ok, resp := helper.ChangePassword(t, &client, server, testingVariables, "new_P@ssw0rd")
 	if ok {
 		t.Fatalf("❌ Password change should have failed with invalid old password. Email: %s", testingVariables.Email)
 	}
@@ -113,7 +113,7 @@ func TestChangePasswordFailsWithSameOldAndNewPassword(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -129,7 +129,7 @@ func TestChangePasswordFailsWithSameOldAndNewPassword(t *testing.T) {
 
 	var errorMessage = helper.ErrorMessage
 	helper.DecodeJSON(t, resp.Body, &errorMessage)
-	if errorMessage.ErrorMessage == service.ErrUserChangePasswordFailed.Error() {
+	if errorMessage.ErrorMessage == "Old password must not be same as a new one" {
 		t.Logf("✅ Password change failed as expected with same old and new password. Error: %s", errorMessage.ErrorMessage)
 	} else {
 		t.Fatalf("❌ Unexpected error message. Email: %s, got: %s", testingVariables.Email, errorMessage.ErrorMessage)

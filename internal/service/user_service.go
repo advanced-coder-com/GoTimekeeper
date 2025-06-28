@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/advanced-coder-com/go-timekeeper/internal/validator"
 	"github.com/google/uuid"
+	"gitlab.com/tozd/go/errors"
 	"time"
 
 	"github.com/advanced-coder-com/go-timekeeper/internal/model"
@@ -66,7 +66,7 @@ func (userService *UserService) Signup(ctx context.Context, input UserInput) (*m
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return nil, errors.Errorf("%v", err)
 	}
 
 	user := &model.User{
@@ -86,16 +86,16 @@ func (userService *UserService) Signup(ctx context.Context, input UserInput) (*m
 func (userService *UserService) Signin(ctx context.Context, input UserInput) (*model.User, error) {
 	err := input.validateUserInput()
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return nil, err
 
 	}
 	user, err := userService.repo.GetByEmail(ctx, input.Email)
 	if err != nil {
-		return nil, err
+		return nil, WrapPublicMessage(err, "User with provided email does not exist")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		return nil, fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return nil, errors.Errorf("%v", err)
 	}
 	return user, nil
 }
@@ -110,10 +110,12 @@ func (userService *UserService) GetUser(ctx context.Context, userId string) (*mo
 
 func (userService *UserService) ChangePassword(ctx context.Context, userID string, input ChangePasswordInput) error {
 	if input.OldPassword == "" || input.NewPassword == "" {
-		return errors.New(fmt.Sprintf("%s both old and new passwords are required", userServiceLogPrefix))
+		err := errors.New("both old and new passwords are required")
+		return WrapPublicMessage(err, err.Error())
 	}
 	if input.OldPassword == input.NewPassword {
-		return errors.New(fmt.Sprintf("%s Old password must not be same as a new one", userServiceLogPrefix))
+		err := errors.New("Old password must not be same as a new one")
+		return WrapPublicMessage(err, err.Error())
 	}
 
 	user, err := userService.repo.GetByID(ctx, userID)
@@ -122,12 +124,12 @@ func (userService *UserService) ChangePassword(ctx context.Context, userID strin
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword)); err != nil {
-		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return errors.Errorf("%v", err)
 	}
 
 	hashed, err := bcrypt.GenerateFromPassword([]byte(input.NewPassword), bcrypt.DefaultCost)
 	if err != nil {
-		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return errors.Errorf("%v", err)
 	}
 
 	user.Password = string(hashed)
@@ -139,11 +141,11 @@ func (userService *UserService) ChangePassword(ctx context.Context, userID strin
 func (userService *UserService) Delete(ctx context.Context, userId string) error {
 	user, err := userService.repo.GetByID(ctx, userId)
 	if err != nil {
-		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return err
 	}
 	err = userService.repo.Delete(ctx, user)
 	if err != nil {
-		return fmt.Errorf("%s: %w", userServiceLogPrefix, err)
+		return err
 	}
 	return nil
 }
@@ -152,14 +154,11 @@ func (userService *UserService) Delete(ctx context.Context, userId string) error
 func (input *UserInput) validateUserInput() error {
 	err := validator.ValidateEmail(input.Email)
 	if err != nil {
-
 		return errors.New("invalid email")
-		//return NewError(fmt.Errorf("%s: %w", userServiceLogPrefix, err), *err.Error())
 	}
 	err = validator.ValidatePassword(input.Password)
 	if err != nil {
-		//return NewError(err.Error(), fmt.Errorf("%s: %w", userServiceLogPrefix, err))
-		return err
+		return errors.Errorf("%v", err)
 	}
 	return nil
 }

@@ -27,14 +27,14 @@ func (projectHandler *ProjectHandler) Create(ctx *gin.Context) {
 	userID := ctx.GetString("user_id")
 	var input service.ProjectInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrProjectInvalidInput.Error()})
 		return
 	}
 
 	project, err := projectHandler.projectService.Create(ctx.Request.Context(), userID, input)
 	if err != nil {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrProjectCreateFailed.Error()})
 		return
 	}
@@ -47,7 +47,7 @@ func (projectHandler *ProjectHandler) GetByID(ctx *gin.Context) {
 
 	project, err := projectHandler.projectService.GetByID(ctx.Request.Context(), projectID, userID)
 	if err != nil {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusNotFound, gin.H{"error": service.ErrProjectGetFailed.Error()})
 		return
 	}
@@ -59,7 +59,7 @@ func (projectHandler *ProjectHandler) List(ctx *gin.Context) {
 
 	projects, err := projectHandler.projectService.GetAllByUser(ctx.Request.Context(), userID)
 	if err != nil {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrProjectGetFailed.Error()})
 		return
 	}
@@ -74,14 +74,14 @@ func (projectHandler *ProjectHandler) Rename(ctx *gin.Context) {
 		Name string `json:"name"`
 	}
 	if err := ctx.ShouldBindJSON(&payload); err != nil || strings.TrimSpace(payload.Name) == "" {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": service.ErrProjectInvalidInput.Error()})
 		return
 	}
 
 	err := projectHandler.projectService.Rename(ctx.Request.Context(), projectID, userID, payload.Name)
 	if err != nil {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusNotFound, gin.H{"error": service.ErrProjectUpdateFailed.Error()})
 		return
 	}
@@ -93,7 +93,7 @@ func (projectHandler *ProjectHandler) Delete(ctx *gin.Context) {
 	projectID := ctx.Param("id")
 	err := projectHandler.projectService.Delete(ctx.Request.Context(), projectID)
 	if err != nil {
-		projectHandler.logger.LogError(projectHandlerErrorPrefix, err)
+		projectHandler.logger.Error(projectHandlerErrorPrefix, err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": service.ErrProjectDeleteFailed.Error()})
 		return
 	}

@@ -1,19 +1,19 @@
 package logs
 
 import (
+	"go.uber.org/zap"
 	"os"
 	"sync"
 
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Logger interface {
-	Info(msg string, args ...interface{})
-	Error(msg string, args ...interface{})
-	Debug(msg string, args ...interface{})
-	Fatal(msg string, args ...interface{})
-	LogError(prefix string, err error)
+	Info(args ...interface{})
+	Error(args ...interface{})
+	Debug(args ...interface{})
+	Fatal(args ...interface{})
 }
 
 type ZapLogger struct {
@@ -38,46 +38,85 @@ func Get() *ZapLogger {
 
 func newZapLogger() *ZapLogger {
 	mode := viper.GetString("MODE")
+	if mode == "" {
+		mode = "development"
+	}
 
-	var config zap.Config
+	if err := os.MkdirAll("logs", 0755); err != nil {
+		panic("failed to create log directory: " + err.Error())
+	}
+
+	encoderCfg := zapcore.EncoderConfig{
+		TimeKey:    "timestamp",
+		LevelKey:   "level",
+		NameKey:    "logger",
+		CallerKey:  "caller",
+		MessageKey: "message",
+		//StacktraceKey:  "stacktrace",
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
+	}
+
+	level := zap.DebugLevel
 	if mode == "production" {
-		config = zap.NewProductionConfig()
+		level = zap.InfoLevel
+	}
+
+	stdoutEncoder := WrapEncoderAsPretty(zapcore.NewJSONEncoder(encoderCfg))
+	stdoutCore := zapcore.NewCore(stdoutEncoder, zapcore.AddSync(os.Stdout), level)
+
+	fileEncoderCfg := encoderCfg
+	fileEncoderCfg.StacktraceKey = "stacktrace"
+
+	var fileEncoder zapcore.Encoder
+	var loggingLevel zapcore.Level
+	if mode == "production" {
+		fileEncoder = zapcore.NewJSONEncoder(fileEncoderCfg)
+		loggingLevel = zap.ErrorLevel
 	} else {
-		config = zap.NewDevelopmentConfig()
+		fileEncoder = WrapEncoderAsPretty(zapcore.NewJSONEncoder(fileEncoderCfg))
+		loggingLevel = zap.DebugLevel
 	}
 
-	ensureLogDirectory("logs")
+	fileCore := zapcore.NewCore(fileEncoder, zapcore.AddSync(getLogFileWriter()), level)
 
-	config.OutputPaths = []string{
-		"stdout",
-		"logs/app.log",
-	}
-	config.ErrorOutputPaths = []string{
-		"stderr",
-		"logs/app.log",
-	}
+	core := zapcore.NewTee(stdoutCore, fileCore)
 
-	logger, err := config.Build()
-	if err != nil {
-		panic("❌ Failed to initialize zap logger: " + err.Error())
-	}
-
+	logger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(loggingLevel))
 	return &ZapLogger{sugar: logger.Sugar()}
 }
 
-func (l *ZapLogger) Info(msg string, args ...interface{})  { l.sugar.Infof(msg, args...) }
-func (l *ZapLogger) Error(msg string, args ...interface{}) { l.sugar.Errorf(msg, args...) }
-func (l *ZapLogger) Debug(msg string, args ...interface{}) { l.sugar.Debugf(msg, args...) }
-func (l *ZapLogger) Fatal(msg string, args ...interface{}) { l.sugar.Fatalf(msg, args...) }
-
-func (l *ZapLogger) LogError(prefix string, err error) {
+func getLogFileWriter() zapcore.WriteSyncer {
+	file, err := os.OpenFile("logs/app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		l.Error("%s: %v", prefix, err)
+		panic("failed to open log file: " + err.Error())
 	}
+	return zapcore.AddSync(file)
 }
 
-func ensureLogDirectory(dir string) {
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		panic("failed to create log directory: " + err.Error())
-	}
-}
+//// Public API
+//func Info(msg string, args ...interface{}) {
+//	Get().sugar.Info(append([]interface{}{msg}, args...)...)
+//}
+//
+//func Error(args ...interface{}) {
+//	//Get().sugar.Error(append([]interface{}{msg}, args...)...)
+//	Get().sugar.Errorw("test1", args...)
+//
+//}
+//func Debug(args ...interface{}) {
+//	Get().sugar.Debug(args...)
+//}
+//func Fatal(msg string, args ...interface{}) {
+//	Get().sugar.Fatal(args...)
+//}
+//func Warn(msg string, args ...interface{}) {
+//	Get().sugar.Warn(args...)
+//}
+
+func (l *ZapLogger) Info(args ...interface{})  { l.sugar.Info(args...) }
+func (l *ZapLogger) Error(args ...interface{}) { l.sugar.Errorw("", args) }
+func (l *ZapLogger) Debug(args ...interface{}) { l.sugar.Debug(args...) }
+func (l *ZapLogger) Fatal(args ...interface{}) { l.sugar.Fatal(args...) }

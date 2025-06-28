@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/advanced-coder-com/go-timekeeper/internal/repository"
-	"github.com/advanced-coder-com/go-timekeeper/internal/service"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
 	"net/http"
@@ -35,7 +34,7 @@ func TestSignUpSuccess(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -65,7 +64,7 @@ func TestSignUpFailsWithDuplicateEmail(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -78,7 +77,8 @@ func TestSignUpFailsWithDuplicateEmail(t *testing.T) {
 
 	var errorMessage = helper.ErrorMessage
 	helper.DecodeJSON(t, resp.Body, &errorMessage)
-	if errorMessage.ErrorMessage == service.ErrUserSignUpFailed.Error() {
+	errMessage := fmt.Sprintf("User with email %s already exists", testingVariables.Email)
+	if errorMessage.ErrorMessage == errMessage {
 		t.Logf("✅ Sign up failed as expected with duplicate email. Error: %s", errorMessage.ErrorMessage)
 	} else {
 		t.Fatalf("❌ Unexpected error message on duplicate sign up. Email: %s, got: %s", testingVariables.Email, errorMessage.ErrorMessage)

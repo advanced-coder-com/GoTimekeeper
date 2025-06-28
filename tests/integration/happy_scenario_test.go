@@ -32,7 +32,7 @@ func TestHappyScenario(t *testing.T) {
 
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 	// 1. SignUp
 	result, _ := helper.SignUp(t, &client, server, testingVariables)
 	if result {

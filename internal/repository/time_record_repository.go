@@ -2,11 +2,11 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/advanced-coder-com/go-timekeeper/internal/db"
 	"github.com/advanced-coder-com/go-timekeeper/internal/gormquery"
 	"github.com/advanced-coder-com/go-timekeeper/internal/model"
+	"gitlab.com/tozd/go/errors"
 	"gorm.io/gorm"
 )
 

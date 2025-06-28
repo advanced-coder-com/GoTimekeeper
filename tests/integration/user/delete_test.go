@@ -33,7 +33,7 @@ func TestDeleteUserSuccess(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
@@ -63,7 +63,7 @@ func TestDeleteAlreadyDeletedUserFails(t *testing.T) {
 	client := http.Client{}
 	testingVariables := &helper.TestingContext{}
 	testingVariables.Email = "user" + uuid.NewString() + "@example.com"
-	testingVariables.Password = "password"
+	testingVariables.Password = "P@ssw0rd"
 
 	if ok, _ := helper.SignUp(t, &client, server, testingVariables); !ok {
 		t.Fatalf("❌ Failed to sign up user. Email: %s", testingVariables.Email)
